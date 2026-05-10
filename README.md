@@ -1,60 +1,60 @@
 # Local Notice Hexagonal WebFlux
 
-## Arquitectura Hexagonal
+**Repository:** https://github.com/sisroberto801/local-notice-hex-webflux.git
 
-El proyecto sigue una arquitectura hexagonal (clean architecture) con las siguientes capas:
+## Hexagonal Architecture
+
+The project follows a hexagonal (clean architecture) with the following layers:
 
 ```
 src/main/java/com/hexagonal/notice/
-├── NoticeApplication.java          # Clase principal de Spring Boot
-├── application/                   # Capa de aplicación
-│   ├── controller/                # Controladores REST
-│   └── service/                   # Servicios de aplicación
-├── domain/                        # Capa de dominio (core)
-│   ├── model/                     # Entidades de dominio
-│   └── port/                      # Puertos de entrada/salida
-└── infrastructure/                # Capa de infraestructura
-    ├── config/                    # Configuraciones
-    ├── entity/                    # Entidades de base de datos
-    ├── mapper/                    # Mappers entre dominio e infraestructura
-    └── repository/                # Implementaciones de repositorios
+├── NoticeApplication.java          # Main Spring Boot class
+├── application/                   # Application layer
+│   ├── controller/                # REST controllers
+│   └── service/                   # Application services
+├── domain/                        # Domain layer (core)
+│   ├── model/                     # Domain entities
+│   └── port/                      # Input/output ports
+└── infrastructure/                # Infrastructure layer
+    ├── config/                    # Configurations
+    ├── entity/                    # Database entities
+    ├── mapper/                    # Mappers between domain and infrastructure
+    └── repository/                # Repository implementations
 ```
 
-### Flujo de la Arquitectura:
-1. **Controller** recibe peticiones HTTP
-2. **Service** coordina casos de uso
-3. **Domain** contiene la lógica de negocio pura
-4. **Infrastructure** implementa detalles técnicos (BD, APIs externas)
+### Architecture Flow:
+1. **Controller** receives HTTP requests
+2. **Service** coordinates use cases
+3. **Domain** contains pure business logic
+4. **Infrastructure** implements technical details (DB, external APIs)
 
-
-
-## Ejecutar Aplicación
+## Run Application
 
 ```bash
-# Crear base de datos
+# Create database
 createdb notice_db
 
-# Ejecutar migraciones
+# Run migrations
 mvn flyway:clean flyway:migrate
 
-# Informacion
+# Get information
 mvn flyway:info
 
-# Iniciar aplicación
+# Start application
 mvn spring-boot:run
 ```
 
-## Base de Datos
+## Database
 
 - PostgreSQL: `notice_db`
-- Usuario: `postgres`
-- Contraseña: `postgres`
-- Puerto: `5432`
+- User: `postgres`
+- Password: `postgres`
+- Port: `5432`
 
-## Migraciones
+## Migrations
 
-Las migraciones están en `src/main/resources/db/migration/`:
-- `database_v1.sql` - Tablas iniciales (users, profiles, tasks, task_assignments)
+Migrations are located in `src/main/resources/db/migration/`:
+- `database_v1.sql` - Initial tables (users, profiles, tasks, task_assignments)
 
 ## Reference Documentation
 For further reference, please consider the following sections:
