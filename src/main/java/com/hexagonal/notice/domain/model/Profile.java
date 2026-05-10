@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 public class Profile {
     private Long id;
     private Long userId;
+    private String email;
+    private String fullName;
     private String bio;
     private String avatarUrl;
     private String phoneNumber;

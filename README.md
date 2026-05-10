@@ -40,8 +40,58 @@ mvn flyway:clean flyway:migrate
 # Get information
 mvn flyway:info
 
+# execute maven on application
+mvn clean compile package
+
 # Start application
 mvn spring-boot:run
+```
+
+## API Documentation
+
+Once the application is running, you can access the Swagger UI at:
+
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **OpenAPI JSON**: http://localhost:8080/v3/api-docs
+
+The Swagger documentation provides interactive API testing and detailed endpoint information.
+
+### REST Endpoints
+
+#### Users Management
+- `GET /api/users` - Get all users
+- `POST /api/users` - Create a new user
+- `GET /api/users/{id}` - Get user by ID
+- `PUT /api/users/{id}` - Update user
+- `DELETE /api/users/{id}` - Delete user
+- `GET /api/users/email/{email}` - Get user by email (deprecated)
+
+#### User Model
+```json
+{
+  "id": 1,
+  "username": "john_doe",
+  "password": "hashed_password",
+  "status": true,
+  "createdAt": "2024-01-15T10:30:00Z",
+  "updatedAt": "2024-01-15T10:30:00Z"
+}
+```
+
+#### Profile Model
+```json
+{
+  "id": 1,
+  "userId": 1,
+  "email": "john.doe@example.com",
+  "fullName": "John Doe",
+  "bio": "Software Developer",
+  "avatarUrl": "https://example.com/avatar.jpg",
+  "phoneNumber": "+1234567890",
+  "address": "123 Main St, City, Country",
+  "createdAt": "2024-01-15T10:30:00Z",
+  "updatedAt": "2024-01-15T10:30:00Z"
+}
 ```
 
 ## Database

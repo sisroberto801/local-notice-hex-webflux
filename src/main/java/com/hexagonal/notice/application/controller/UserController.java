@@ -41,9 +41,4 @@ public class UserController {
     public Mono<Void> deleteUser(@PathVariable Long id) {
         return userService.deleteUser(id);
     }
-
-    @GetMapping("/email/{email}")
-    public Mono<User> getUserByEmail(@PathVariable String email) {
-        return userService.getUserByEmail(email);
-    }
 }

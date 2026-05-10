@@ -57,10 +57,4 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     public Mono<Void> deleteById(Long id) {
         return r2dbcUserRepository.deleteById(id);
     }
-
-    @Override
-    public Mono<User> findByEmail(String email) {
-        return r2dbcUserRepository.findByEmail(email)
-                .map(userMapper::toDomain);
-    }
 }

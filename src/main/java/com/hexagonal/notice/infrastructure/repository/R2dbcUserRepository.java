@@ -7,5 +7,4 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface R2dbcUserRepository extends R2dbcRepository<UserEntity, Long> {
-    Mono<UserEntity> findByEmail(String email);
 }
