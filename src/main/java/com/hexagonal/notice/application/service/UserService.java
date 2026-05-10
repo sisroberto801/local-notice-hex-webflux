@@ -33,8 +33,4 @@ public class UserService {
     public Mono<Void> deleteUser(Long id) {
         return userRepository.deleteById(id);
     }
-
-    public Mono<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
 }

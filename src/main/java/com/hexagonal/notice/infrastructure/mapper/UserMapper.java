@@ -15,8 +15,8 @@ public class UserMapper {
         return UserEntity.builder()
                 .id(user.getId())
                 .username(user.getUsername())
-                .email(user.getEmail())
-                .fullName(user.getFullName())
+                .password(user.getPassword())
+                .status(user.getStatus() != null ? user.getStatus() : true)
                 .createdAt(user.getCreatedAt() != null ? user.getCreatedAt() : LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -28,8 +28,8 @@ public class UserMapper {
         return User.builder()
                 .id(entity.getId())
                 .username(entity.getUsername())
-                .email(entity.getEmail())
-                .fullName(entity.getFullName())
+                .password(entity.getPassword())
+                .status(entity.getStatus())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();

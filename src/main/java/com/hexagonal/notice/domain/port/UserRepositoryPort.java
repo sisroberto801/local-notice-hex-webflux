@@ -14,6 +14,4 @@ public interface UserRepositoryPort {
     Mono<User> update(Long id, User user);
 
     Mono<Void> deleteById(Long id);
-
-    Mono<User> findByEmail(String email);
 }

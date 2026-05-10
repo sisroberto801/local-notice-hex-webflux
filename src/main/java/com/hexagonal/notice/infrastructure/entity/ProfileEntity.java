@@ -18,6 +18,8 @@ public class ProfileEntity {
     @Id
     private Long id;
     private Long userId;
+    private String email;
+    private String fullName;
     private String bio;
     private String avatarUrl;
     private String phoneNumber;
