@@ -1,7 +1,7 @@
 package com.hexagonal.notice.infrastructure.repository.adapter;
 
 import com.hexagonal.notice.domain.model.TaskAssign;
-import com.hexagonal.notice.domain.port.TaskAssignRepositoryPort;
+import com.hexagonal.notice.domain.port.out.TaskAssignRepositoryPort;
 import com.hexagonal.notice.infrastructure.entity.TaskAssignEntity;
 import com.hexagonal.notice.infrastructure.mapper.TaskAssignMapper;
 import com.hexagonal.notice.infrastructure.repository.R2dbcTaskAssignRepository;

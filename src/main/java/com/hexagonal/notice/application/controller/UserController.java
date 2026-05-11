@@ -23,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public Mono<User> getUser(@PathVariable Long id) {
+    public Mono<User> getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
@@ -39,7 +39,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> deleteUser(@PathVariable Long id) {
-        return userService.deleteUser(id);
+    public Mono<Void> deleteUserById(@PathVariable Long id) {
+        return userService.deleteUserById(id);
     }
 }

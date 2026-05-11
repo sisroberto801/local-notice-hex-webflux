@@ -1,36 +1,58 @@
 package com.hexagonal.notice.application.service;
 
 import com.hexagonal.notice.domain.model.User;
-import com.hexagonal.notice.domain.port.UserRepositoryPort;
+import com.hexagonal.notice.domain.port.in.user.CreateUserUseCase;
+import com.hexagonal.notice.domain.port.in.user.DeleteUserUseCase;
+import com.hexagonal.notice.domain.port.in.user.RetrieveUserUseCase;
+import com.hexagonal.notice.domain.port.in.user.UpdateUserUseCase;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
-public class UserService {
-    private final UserRepositoryPort userRepository;
+public class UserService implements
+        CreateUserUseCase, RetrieveUserUseCase, UpdateUserUseCase, DeleteUserUseCase {
 
-    public UserService(UserRepositoryPort userRepository) {
-        this.userRepository = userRepository;
+    private final CreateUserUseCase createUserUseCase;
+    private final RetrieveUserUseCase retrieveUserUseCase;
+    private final UpdateUserUseCase updateUserUseCase;
+    private final DeleteUserUseCase deleteUserUseCase;
+
+    public UserService(
+            @Qualifier("createUserBean") CreateUserUseCase createUserUseCase,
+            @Qualifier("retrieveUserBean") RetrieveUserUseCase retrieveUserUseCase,
+            @Qualifier("updateUserBean") UpdateUserUseCase updateUserUseCase,
+            @Qualifier("deleteUserBean") DeleteUserUseCase deleteUserUseCase
+    ) {
+        this.createUserUseCase = createUserUseCase;
+        this.retrieveUserUseCase = retrieveUserUseCase;
+        this.updateUserUseCase = updateUserUseCase;
+        this.deleteUserUseCase = deleteUserUseCase;
     }
 
+    @Override
     public Mono<User> createUser(User user) {
-        return userRepository.save(user);
+        return createUserUseCase.createUser(user);
     }
 
+    @Override
     public Mono<User> getUserById(Long id) {
-        return userRepository.findById(id);
+        return retrieveUserUseCase.getUserById(id);
     }
 
+    @Override
     public Flux<User> getAllUsers() {
-        return userRepository.findAll();
+        return retrieveUserUseCase.getAllUsers();
     }
 
+    @Override
     public Mono<User> updateUser(Long id, User user) {
-        return userRepository.update(id, user);
+        return updateUserUseCase.updateUser(id, user);
     }
 
-    public Mono<Void> deleteUser(Long id) {
-        return userRepository.deleteById(id);
+    @Override
+    public Mono<Void> deleteUserById(Long id) {
+        return deleteUserUseCase.deleteUserById(id);
     }
 }

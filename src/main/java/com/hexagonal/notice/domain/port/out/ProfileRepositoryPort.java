@@ -1,4 +1,4 @@
-package com.hexagonal.notice.domain.port;
+package com.hexagonal.notice.domain.port.out;
 
 import com.hexagonal.notice.domain.model.Profile;
 import reactor.core.publisher.Flux;

@@ -1,36 +1,54 @@
 package com.hexagonal.notice.application.service;
 
 import com.hexagonal.notice.domain.model.Profile;
-import com.hexagonal.notice.domain.port.ProfileRepositoryPort;
+import com.hexagonal.notice.domain.port.in.profile.CreateProfileUseCase;
+import com.hexagonal.notice.domain.port.in.profile.DeleteProfileUseCase;
+import com.hexagonal.notice.domain.port.in.profile.RetrieveProfileUseCase;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
-public class ProfileService {
-    private final ProfileRepositoryPort profileRepository;
+public class ProfileService implements
+        CreateProfileUseCase, RetrieveProfileUseCase, DeleteProfileUseCase {
 
-    public ProfileService(ProfileRepositoryPort profileRepository) {
-        this.profileRepository = profileRepository;
+    private final CreateProfileUseCase createProfileUseCase;
+    private final RetrieveProfileUseCase retrieveProfileUseCase;
+    private final DeleteProfileUseCase deleteProfileUseCase;
+
+    public ProfileService(
+            @Qualifier("createProfileBean") CreateProfileUseCase createProfileUseCase,
+            @Qualifier("retrieveProfileBean") RetrieveProfileUseCase retrieveProfileUseCase,
+            @Qualifier("deleteProfileBean") DeleteProfileUseCase deleteProfileUseCase
+    ) {
+        this.createProfileUseCase = createProfileUseCase;
+        this.retrieveProfileUseCase = retrieveProfileUseCase;
+        this.deleteProfileUseCase = deleteProfileUseCase;
     }
 
+    @Override
     public Mono<Profile> createProfile(Profile profile) {
-        return profileRepository.save(profile);
+        return createProfileUseCase.createProfile(profile);
     }
 
+    @Override
     public Mono<Profile> getProfileById(Long id) {
-        return profileRepository.findById(id);
+        return retrieveProfileUseCase.getProfileById(id);
     }
 
+    @Override
     public Mono<Profile> getProfileByUserId(Long userId) {
-        return profileRepository.findByUserId(userId);
+        return retrieveProfileUseCase.getProfileByUserId(userId);
     }
 
+    @Override
     public Flux<Profile> getAllProfiles() {
-        return profileRepository.findAll();
+        return retrieveProfileUseCase.getAllProfiles();
     }
 
-    public Mono<Void> deleteProfile(Long id) {
-        return profileRepository.deleteById(id);
+    @Override
+    public Mono<Void> deleteProfileById(Long id) {
+        return deleteProfileUseCase.deleteProfileById(id);
     }
 }

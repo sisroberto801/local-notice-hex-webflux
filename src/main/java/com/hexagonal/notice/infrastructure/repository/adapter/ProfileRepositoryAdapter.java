@@ -1,7 +1,7 @@
 package com.hexagonal.notice.infrastructure.repository.adapter;
 
 import com.hexagonal.notice.domain.model.Profile;
-import com.hexagonal.notice.domain.port.ProfileRepositoryPort;
+import com.hexagonal.notice.domain.port.out.ProfileRepositoryPort;
 import com.hexagonal.notice.infrastructure.entity.ProfileEntity;
 import com.hexagonal.notice.infrastructure.mapper.ProfileMapper;
 import com.hexagonal.notice.infrastructure.repository.R2dbcProfileRepository;
