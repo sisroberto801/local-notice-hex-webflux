@@ -65,21 +65,23 @@ class NoticeApplicationTests extends BaseTest {
                 .expectStatus().isCreated()
                 .expectBody(User.class)
                 .consumeWith(created -> {
-                    User user = created.getResponseBody();
 
-                    assertNotNull(user);
-                    assertNotNull(user.getId());
+                    User userCreated = created.getResponseBody();
+
+                    assertNotNull(userCreated);
+                    assertNotNull(userCreated.getId());
 
                     webTestClient.get()
-                            .uri("/api/users/" + user.getId())
+                            .uri("/api/users/" + userCreated.getId())
                             .exchange()
                             .expectStatus().isOk()
                             .expectBody(User.class)
-                            .consumeWith(result -> {
-                                User retrievedUser = result.getResponseBody();
+                            .consumeWith(retrieved -> {
 
-                                assertNotNull(retrievedUser);
-                                assertEquals(user.getId(), retrievedUser.getId());
+                                User userRetrieved = retrieved.getResponseBody();
+
+                                assertNotNull(userRetrieved);
+                                assertEquals(userCreated.getId(), userRetrieved.getId());
                             });
                 });
     }
