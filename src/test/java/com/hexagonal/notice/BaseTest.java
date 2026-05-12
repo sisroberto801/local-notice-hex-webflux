@@ -8,6 +8,21 @@ import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.test.StepVerifier;
 
+/**
+ * Base Test Configuration Class
+ * 
+ * Provides common setup and configuration for all integration tests.
+ * This class establishes the testing environment including:
+ * - WebTestClient configuration for API testing
+ * - Database client setup for test database operations
+ * - Database cleanup between tests
+ * - RestAssured configuration (available but not currently used)
+ * 
+ * Test Environment:
+ * - Uses H2 in-memory database
+ * - Random port allocation for web server
+ * - Automatic database cleanup before each test
+ */
 public abstract class BaseTest {
 
     @LocalServerPort
