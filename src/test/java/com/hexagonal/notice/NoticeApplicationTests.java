@@ -1,13 +1,86 @@
 package com.hexagonal.notice;
 
+import com.hexagonal.notice.domain.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import reactor.test.StepVerifier;
 
-@SpringBootTest
-class NoticeApplicationTests {
+import java.util.HashMap;
+import java.util.Map;
 
-	@Test
-	void contextLoads() {
-	}
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = "spring.profiles.active=test"
+)
+class NoticeApplicationTests extends BaseTest {
+
+
+    @Test
+    void contextLoads() {
+    }
+
+    @Test
+    void testDatabaseConnection() {
+        StepVerifier.create(databaseClient.sql("SELECT 1 as result").fetch().one())
+                .expectNextMatches(row -> row.containsKey("result") && row.get("result").equals(1))
+                .verifyComplete();
+    }
+
+    @Test
+    void testUsersTableExists() {
+        StepVerifier.create(databaseClient.sql("SELECT COUNT(*) as count FROM users").fetch().one())
+                .expectNextMatches(row -> row.containsKey("count"))
+                .verifyComplete();
+    }
+
+    @Test
+    void testFindUserById() {
+        webTestClient.get()
+                .uri("/api/users/1")
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("$.status").isEqualTo(404)
+                .jsonPath("$.error").isEqualTo("UserNotFoundException")
+                .jsonPath("$.message").isEqualTo("User not found")
+                .jsonPath("$.path").isEqualTo("/api/users/1");
+    }
+
+    @Test
+    void testCreateUser() {
+        Map<String, Object> data = new HashMap<>();
+        data.put("username", "testuser");
+        data.put("password", "password123");
+        data.put("status", true);
+
+        webTestClient.post()
+                .uri("/api/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(data)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(User.class)
+                .consumeWith(created -> {
+                    User user = created.getResponseBody();
+
+                    assertNotNull(user);
+                    assertNotNull(user.getId());
+
+                    webTestClient.get()
+                            .uri("/api/users/" + user.getId())
+                            .exchange()
+                            .expectStatus().isOk()
+                            .expectBody(User.class)
+                            .consumeWith(result -> {
+                                User retrievedUser = result.getResponseBody();
+
+                                assertNotNull(retrievedUser);
+                                assertEquals(user.getId(), retrievedUser.getId());
+                            });
+                });
+    }
 }

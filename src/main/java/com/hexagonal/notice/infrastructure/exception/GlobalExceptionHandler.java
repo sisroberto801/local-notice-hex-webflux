@@ -27,4 +27,12 @@ public class GlobalExceptionHandler {
         ErrorMessage data = new ErrorMessage(e, exchange.getRequest().getURI().getPath(), status.value());
         return Mono.just(new ResponseEntity<>(data, status));
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public Mono<ResponseEntity<?>> notFound(UserNotFoundException e, ServerWebExchange exchange) {
+        log.info("user not found {}", exchange.getRequest().getURI().getPath());
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ErrorMessage data = new ErrorMessage(e, exchange.getRequest().getURI().getPath(), status.value());
+        return Mono.just(new ResponseEntity<>(data, status));
+    }
 }

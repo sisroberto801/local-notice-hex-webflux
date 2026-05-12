@@ -1,0 +1,39 @@
+CREATE TABLE IF NOT EXISTS users (
+    id IDENTITY PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    status BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS profiles (
+    id IDENTITY PRIMARY KEY,
+    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    full_name VARCHAR(100) NOT NULL,
+    bio TEXT,
+    avatar_url VARCHAR(255),
+    phone_number VARCHAR(20),
+    address TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS tasks (
+    id IDENTITY PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    description TEXT,
+    status VARCHAR(20) DEFAULT 'PENDING',
+    created_by BIGINT REFERENCES users(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS task_assignments (
+    id IDENTITY PRIMARY KEY,
+    task_id BIGINT REFERENCES tasks(id) ON DELETE CASCADE,
+    assigned_to BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(task_id, assigned_to)
+);

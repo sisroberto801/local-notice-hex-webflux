@@ -2,6 +2,7 @@ package com.hexagonal.notice.application.controller;
 
 import com.hexagonal.notice.application.service.UserService;
 import com.hexagonal.notice.domain.model.User;
+import com.hexagonal.notice.infrastructure.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -24,7 +25,8 @@ public class UserController {
 
     @GetMapping("/{id}")
     public Mono<User> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+        return userService.getUserById(id)
+                .switchIfEmpty(Mono.error(new UserNotFoundException("User not found")));
     }
 
     @GetMapping
