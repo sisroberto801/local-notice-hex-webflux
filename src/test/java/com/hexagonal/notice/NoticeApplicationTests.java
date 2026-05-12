@@ -1,14 +1,10 @@
 package com.hexagonal.notice;
 
 import com.hexagonal.notice.domain.model.User;
-import com.hexagonal.notice.infrastructure.exception.UserNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import reactor.test.StepVerifier;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
