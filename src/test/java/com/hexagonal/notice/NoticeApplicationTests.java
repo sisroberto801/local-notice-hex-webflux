@@ -1,6 +1,7 @@
 package com.hexagonal.notice;
 
 import com.hexagonal.notice.domain.model.User;
+import com.hexagonal.notice.infrastructure.exception.UserNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -52,15 +53,16 @@ class NoticeApplicationTests extends BaseTest {
 
     @Test
     void testCreateUser() {
-        Map<String, Object> data = new HashMap<>();
-        data.put("username", "testuser");
-        data.put("password", "password123");
-        data.put("status", true);
+        User user = User.builder()
+                .username("testuser")
+                .password("password123")
+                .status(true)
+                .build();
 
         webTestClient.post()
                 .uri("/api/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(data)
+                .bodyValue(user)
                 .exchange()
                 .expectStatus().isCreated()
                 .expectBody(User.class)
@@ -70,6 +72,7 @@ class NoticeApplicationTests extends BaseTest {
 
                     assertNotNull(userCreated);
                     assertNotNull(userCreated.getId());
+                    assertEquals(user.getUsername(), userCreated.getUsername());
 
                     webTestClient.get()
                             .uri("/api/users/" + userCreated.getId())
