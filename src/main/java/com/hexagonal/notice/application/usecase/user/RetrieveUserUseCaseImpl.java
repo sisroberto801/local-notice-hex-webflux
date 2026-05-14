@@ -21,6 +21,11 @@ public class RetrieveUserUseCaseImpl implements RetrieveUserUseCase {
     }
 
     @Override
+    public Mono<User> getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
     public Flux<User> getAllUsers() {
         return userRepository.findAll();
     }

@@ -7,5 +7,7 @@ import reactor.core.publisher.Mono;
 public interface RetrieveUserUseCase {
     Mono<User> getUserById(Long id);
 
+    Mono<User> getUserByUsername(String username);
+
     Flux<User> getAllUsers();
 }

@@ -37,6 +37,12 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     }
 
     @Override
+    public Mono<User> findByUsername(String username) {
+        return r2dbcUserRepository.findByUsername(username)
+                .map(userMapper::toDomain);
+    }
+
+    @Override
     public Flux<User> findAll() {
         return r2dbcUserRepository.findAll()
                 .map(userMapper::toDomain);

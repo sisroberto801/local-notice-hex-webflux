@@ -9,6 +9,8 @@ public interface UserRepositoryPort {
 
     Mono<User> findById(Long id);
 
+    Mono<User> findByUsername(String username);
+
     Flux<User> findAll();
 
     Mono<User> update(Long id, User user);

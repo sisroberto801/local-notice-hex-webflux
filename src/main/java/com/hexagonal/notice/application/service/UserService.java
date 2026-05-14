@@ -42,6 +42,11 @@ public class UserService implements
     }
 
     @Override
+    public Mono<User> getUserByUsername(String username) {
+        return retrieveUserUseCase.getUserByUsername(username);
+    }
+
+    @Override
     public Flux<User> getAllUsers() {
         return retrieveUserUseCase.getAllUsers();
     }

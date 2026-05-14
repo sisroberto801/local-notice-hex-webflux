@@ -1,34 +1,29 @@
 package com.hexagonal.notice;
 
+import com.hexagonal.notice.infrastructure.config.JwtUtil;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.r2dbc.core.DatabaseClient;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.test.StepVerifier;
 
-/**
- * Base Test Configuration Class
- * 
- * Provides common setup and configuration for all integration tests.
- * This class establishes the testing environment including:
- * - WebTestClient configuration for API testing
- * - Database client setup for test database operations
- * - Database cleanup between tests
- * - RestAssured configuration (available but not currently used)
- * 
- * Test Environment:
- * - Uses H2 in-memory database
- * - Random port allocation for web server
- * - Automatic database cleanup before each test
- */
 public abstract class BaseTest {
 
     @LocalServerPort
     protected int port;
     @Autowired
     protected DatabaseClient databaseClient;
+    @Autowired
+    protected JwtUtil jwtUtil;
+    @Autowired
+    protected PasswordEncoder passwordEncoder;
+    @Autowired
+    protected ReactiveUserDetailsService userDetailsService;
 
     private static final String BASE_URL = "http://localhost";
     protected WebTestClient webTestClient;
@@ -52,5 +47,27 @@ public abstract class BaseTest {
         StepVerifier.create(databaseClient.sql("DELETE FROM tasks").then()).verifyComplete();
         StepVerifier.create(databaseClient.sql("DELETE FROM profiles").then()).verifyComplete();
         StepVerifier.create(databaseClient.sql("DELETE FROM users").then()).verifyComplete();
+    }
+
+    protected String createTestUserAndGetToken(String username, String password) {
+        String encodedPassword = passwordEncoder.encode(password);
+
+        StepVerifier.create(
+                databaseClient.sql("INSERT INTO users (username, password, status) VALUES ($1, $2, $3)")
+                        .bind("$1", username)
+                        .bind("$2", encodedPassword)
+                        .bind("$3", true)
+                        .then()
+        ).verifyComplete();
+
+        UserDetails userDetails = userDetailsService.findByUsername(username).block();
+        return jwtUtil.generateToken(userDetails);
+    }
+
+    protected WebTestClient webTestClientWithAuth(String token) {
+        return WebTestClient.bindToServer()
+                .baseUrl(BASE_URL + ":" + port)
+                .defaultHeader("Authorization", "Bearer " + token)
+                .build();
     }
 }
