@@ -5,6 +5,7 @@ import com.hexagonal.notice.domain.model.User;
 import com.hexagonal.notice.infrastructure.exception.UserNotFoundException;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -33,8 +34,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public Mono<User> getUserById(@PathVariable Long id) {
+    public Mono<ResponseEntity<User>> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
+                .map(ResponseEntity::ok)
                 .switchIfEmpty(Mono.error(new UserNotFoundException("User not found")));
     }
 
@@ -48,8 +50,9 @@ public class UserController {
     @PutMapping("/{id}")
     @SecurityRequirement(name = "Bearer Token")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public Mono<User> updateUser(@PathVariable Long id, @RequestBody User user) {
-        return userService.updateUser(id, user);
+    public Mono<ResponseEntity<User>> updateUser(@PathVariable Long id, @RequestBody User user) {
+        return userService.updateUser(id, user)
+                .map(ResponseEntity::ok);
     }
 
     @DeleteMapping("/{id}")

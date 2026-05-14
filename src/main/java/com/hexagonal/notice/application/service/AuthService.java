@@ -1,9 +1,10 @@
 package com.hexagonal.notice.application.service;
 
+import com.hexagonal.notice.domain.model.AuthenticationCommand;
+import com.hexagonal.notice.domain.model.AuthenticationResult;
+import com.hexagonal.notice.domain.port.in.auth.AuthenticateUserUseCase;
 import com.hexagonal.notice.domain.port.in.user.RetrieveUserUseCase;
 import com.hexagonal.notice.infrastructure.config.JwtUtil;
-import com.hexagonal.notice.infrastructure.dto.AuthenticationRequest;
-import com.hexagonal.notice.infrastructure.dto.AuthenticationResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -16,7 +17,7 @@ import java.util.Collections;
 
 @Slf4j
 @Service
-public class AuthService {
+public class AuthService implements AuthenticateUserUseCase {
 
     private final ReactiveAuthenticationManager authenticationManager;
     private final RetrieveUserUseCase retrieveUserUseCase;
@@ -32,16 +33,17 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    public Mono<AuthenticationResponse> authenticate(AuthenticationRequest request) {
-        log.info("Attempting to authenticate user: {}", request.getUsername());
+    @Override
+    public Mono<AuthenticationResult> authenticate(AuthenticationCommand command) {
+        log.info("Attempting to authenticate user: {}", command.getUsername());
 
         return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
+                        command.getUsername(),
+                        command.getPassword()
                 )
         ).flatMap(auth -> {
-            return retrieveUserUseCase.getUserByUsername(request.getUsername())
+            return retrieveUserUseCase.getUserByUsername(command.getUsername())
                     .map(user -> {
                         try {
                             UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
@@ -52,18 +54,18 @@ public class AuthService {
 
                             final String jwt = jwtUtil.generateToken(userDetails);
 
-                            log.info("User authenticated successfully: {}", request.getUsername());
+                            log.info("User authenticated successfully: {}", command.getUsername());
 
-                            return AuthenticationResponse.builder()
+                            return AuthenticationResult.builder()
                                     .token(jwt)
                                     .build();
                         } catch (Exception e) {
-                            log.error("Error generating JWT token for user: {}", request.getUsername(), e);
+                            log.error("Error generating JWT token for user: {}", command.getUsername(), e);
                             throw new RuntimeException("Error generating token");
                         }
                     });
         }).onErrorResume(e -> {
-            log.error("Authentication failed for user: {}", request.getUsername(), e);
+            log.error("Authentication failed for user: {}", command.getUsername(), e);
             return Mono.error(new RuntimeException("Invalid credentials"));
         });
     }

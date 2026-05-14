@@ -1,8 +1,10 @@
 package com.hexagonal.notice.application.service;
 
+import com.hexagonal.notice.domain.model.AuthenticationCommand;
+import com.hexagonal.notice.domain.model.AuthenticationResult;
+import com.hexagonal.notice.domain.port.in.user.RetrieveUserUseCase;
+import com.hexagonal.notice.domain.model.User;
 import com.hexagonal.notice.infrastructure.config.JwtUtil;
-import com.hexagonal.notice.infrastructure.dto.AuthenticationRequest;
-import com.hexagonal.notice.infrastructure.dto.AuthenticationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import reactor.core.publisher.Mono;
 
@@ -27,7 +28,7 @@ class AuthServiceTest {
     private ReactiveAuthenticationManager authenticationManager;
 
     @Mock
-    private ReactiveUserDetailsService userDetailsService;
+    private RetrieveUserUseCase retrieveUserUseCase;
 
     @Mock
     private JwtUtil jwtUtil;
@@ -35,20 +36,28 @@ class AuthServiceTest {
     @InjectMocks
     private AuthService authService;
 
-    private AuthenticationRequest validRequest;
-    private AuthenticationRequest invalidRequest;
+    private AuthenticationCommand validCommand;
+    private AuthenticationCommand invalidCommand;
     private UserDetails userDetails;
+    private User user;
 
     @BeforeEach
     void setUp() {
-        validRequest = AuthenticationRequest.builder()
+        validCommand = AuthenticationCommand.builder()
                 .username("testuser")
                 .password("password123")
                 .build();
 
-        invalidRequest = AuthenticationRequest.builder()
+        invalidCommand = AuthenticationCommand.builder()
                 .username("testuser")
                 .password("wrongpassword")
+                .build();
+
+        user = User.builder()
+                .id(1L)
+                .username("testuser")
+                .password("password123")
+                .status(true)
                 .build();
 
         userDetails = org.springframework.security.core.userdetails.User.builder()
@@ -61,17 +70,17 @@ class AuthServiceTest {
     @Test
     @DisplayName("Should authenticate successfully and return JWT token")
     void authenticate_shouldReturnToken_whenValidCredentialsProvided() {
-        when(userDetailsService.findByUsername("testuser")).thenReturn(Mono.just(userDetails));
+        when(retrieveUserUseCase.getUserByUsername("testuser")).thenReturn(Mono.just(user));
         when(jwtUtil.generateToken(userDetails)).thenReturn("mock.jwt.token");
         when(authenticationManager.authenticate(any())).thenReturn(Mono.empty());
 
-        AuthenticationResponse response = authService.authenticate(validRequest).block();
+        AuthenticationResult result = authService.authenticate(validCommand).block();
 
-        assertNotNull(response);
-        assertEquals("mock.jwt.token", response.getToken());
+        assertNotNull(result);
+        assertEquals("mock.jwt.token", result.getToken());
 
         verify(authenticationManager).authenticate(any());
-        verify(userDetailsService).findByUsername("testuser");
+        verify(retrieveUserUseCase).getUserByUsername("testuser");
         verify(jwtUtil).generateToken(userDetails);
     }
 
@@ -81,67 +90,67 @@ class AuthServiceTest {
         when(authenticationManager.authenticate(any())).thenReturn(Mono.error(new BadCredentialsException("Invalid credentials")));
 
         RuntimeException exception = assertThrows(RuntimeException.class,
-                () -> authService.authenticate(invalidRequest).block());
+                () -> authService.authenticate(invalidCommand).block());
 
         assertEquals("Invalid credentials", exception.getMessage());
 
         verify(authenticationManager).authenticate(any());
-        verify(userDetailsService, never()).findByUsername(any());
+        verify(retrieveUserUseCase, never()).getUserByUsername(any());
         verify(jwtUtil, never()).generateToken(any());
     }
 
     @Test
-    @DisplayName("Should handle null username in authentication request")
+    @DisplayName("Should handle null username in authentication command")
     void authenticate_shouldThrowException_whenNullUsernameProvided() {
-        AuthenticationRequest requestWithNullUsername = AuthenticationRequest.builder()
+        AuthenticationCommand commandWithNullUsername = AuthenticationCommand.builder()
                 .username(null)
                 .password("password123")
                 .build();
 
         assertThrows(Exception.class,
-                () -> authService.authenticate(requestWithNullUsername).block());
+                () -> authService.authenticate(commandWithNullUsername).block());
 
         verify(authenticationManager, never()).authenticate(any());
     }
 
     @Test
-    @DisplayName("Should handle null password in authentication request")
+    @DisplayName("Should handle null password in authentication command")
     void authenticate_shouldThrowException_whenNullPasswordProvided() {
-        AuthenticationRequest requestWithNullPassword = AuthenticationRequest.builder()
+        AuthenticationCommand commandWithNullPassword = AuthenticationCommand.builder()
                 .username("testuser")
                 .password(null)
                 .build();
 
         assertThrows(Exception.class,
-                () -> authService.authenticate(requestWithNullPassword).block());
+                () -> authService.authenticate(commandWithNullPassword).block());
 
         verify(authenticationManager, never()).authenticate(any());
     }
 
     @Test
-    @DisplayName("Should handle empty username in authentication request")
+    @DisplayName("Should handle empty username in authentication command")
     void authenticate_shouldThrowException_whenEmptyUsernameProvided() {
-        AuthenticationRequest requestWithEmptyUsername = AuthenticationRequest.builder()
+        AuthenticationCommand commandWithEmptyUsername = AuthenticationCommand.builder()
                 .username("")
                 .password("password123")
                 .build();
 
         assertThrows(Exception.class,
-                () -> authService.authenticate(requestWithEmptyUsername).block());
+                () -> authService.authenticate(commandWithEmptyUsername).block());
 
         verify(authenticationManager, never()).authenticate(any());
     }
 
     @Test
-    @DisplayName("Should handle empty password in authentication request")
+    @DisplayName("Should handle empty password in authentication command")
     void authenticate_shouldThrowException_whenEmptyPasswordProvided() {
-        AuthenticationRequest requestWithEmptyPassword = AuthenticationRequest.builder()
+        AuthenticationCommand commandWithEmptyPassword = AuthenticationCommand.builder()
                 .username("testuser")
                 .password("")
                 .build();
 
         assertThrows(Exception.class,
-                () -> authService.authenticate(requestWithEmptyPassword).block());
+                () -> authService.authenticate(commandWithEmptyPassword).block());
 
         verify(authenticationManager, never()).authenticate(any());
     }

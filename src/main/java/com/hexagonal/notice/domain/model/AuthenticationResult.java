@@ -1,4 +1,4 @@
-package com.hexagonal.notice.infrastructure.dto;
+package com.hexagonal.notice.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,8 +10,7 @@ import lombok.NonNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticationResponse {
-
+public class AuthenticationResult {
     @NonNull
     private String token;
 }

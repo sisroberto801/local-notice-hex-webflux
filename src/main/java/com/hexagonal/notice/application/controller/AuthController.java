@@ -1,6 +1,7 @@
 package com.hexagonal.notice.application.controller;
 
-import com.hexagonal.notice.application.service.AuthService;
+import com.hexagonal.notice.domain.model.AuthenticationCommand;
+import com.hexagonal.notice.domain.port.in.auth.AuthenticateUserUseCase;
 import com.hexagonal.notice.infrastructure.dto.AuthenticationRequest;
 import com.hexagonal.notice.infrastructure.dto.AuthenticationResponse;
 import jakarta.validation.Valid;
@@ -19,7 +20,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
+    private final AuthenticateUserUseCase authenticateUserUseCase;
 
     @PostMapping("/login")
     public Mono<ResponseEntity<AuthenticationResponse>> authenticate(
@@ -27,9 +28,17 @@ public class AuthController {
     ) {
         log.info("Authentication request received for user: {}", request.getUsername());
 
-        return authService.authenticate(request)
-                .map(response -> {
+        AuthenticationCommand command = AuthenticationCommand.builder()
+                .username(request.getUsername())
+                .password(request.getPassword())
+                .build();
+
+        return authenticateUserUseCase.authenticate(command)
+                .map(result -> {
                     log.info("User authenticated successfully: {}", request.getUsername());
+                    AuthenticationResponse response = AuthenticationResponse.builder()
+                            .token(result.getToken())
+                            .build();
                     return ResponseEntity.ok(response);
                 });
     }
