@@ -1,10 +1,10 @@
 package com.hexagonal.notice.application.service;
 
 import com.hexagonal.notice.domain.model.User;
-import com.hexagonal.notice.domain.port.in.user.CreateUserUseCase;
-import com.hexagonal.notice.domain.port.in.user.DeleteUserUseCase;
-import com.hexagonal.notice.domain.port.in.user.RetrieveUserUseCase;
-import com.hexagonal.notice.domain.port.in.user.UpdateUserUseCase;
+import com.hexagonal.notice.domain.ports.in.user.CreateUserUseCase;
+import com.hexagonal.notice.domain.ports.in.user.DeleteUserUseCase;
+import com.hexagonal.notice.domain.ports.in.user.RetrieveUserUseCase;
+import com.hexagonal.notice.domain.ports.in.user.UpdateUserUseCase;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;

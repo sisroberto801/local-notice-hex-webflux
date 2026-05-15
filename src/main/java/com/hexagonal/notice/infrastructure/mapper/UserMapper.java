@@ -1,7 +1,9 @@
 package com.hexagonal.notice.infrastructure.mapper;
 
 import com.hexagonal.notice.domain.model.User;
-import com.hexagonal.notice.infrastructure.entity.UserEntity;
+import com.hexagonal.notice.infrastructure.dto.UserRequest;
+import com.hexagonal.notice.infrastructure.dto.UserResponse;
+import com.hexagonal.notice.infrastructure.entities.UserEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -32,6 +34,26 @@ public class UserMapper {
                 .status(entity.getStatus())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
+                .build();
+    }
+
+    public User toUserFromRequest(UserRequest request) {
+        return (null == request) ?
+                null :
+                User.builder()
+                        .username(request.getUsername())
+                        .password(request.getPassword())
+                        .status(request.getStatus())
+                        .build();
+    }
+
+    public UserResponse toUserResponse(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .status(user.getStatus())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .build();
     }
 }

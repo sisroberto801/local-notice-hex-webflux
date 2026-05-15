@@ -1,7 +1,7 @@
 package com.hexagonal.notice.infrastructure.mapper;
 
 import com.hexagonal.notice.domain.model.Profile;
-import com.hexagonal.notice.infrastructure.entity.ProfileEntity;
+import com.hexagonal.notice.infrastructure.entities.ProfileEntity;
 import org.springframework.stereotype.Component;
 
 @Component

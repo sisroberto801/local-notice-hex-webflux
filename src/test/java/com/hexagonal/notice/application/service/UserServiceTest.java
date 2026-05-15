@@ -1,10 +1,10 @@
 package com.hexagonal.notice.application.service;
 
 import com.hexagonal.notice.domain.model.User;
-import com.hexagonal.notice.domain.port.in.user.CreateUserUseCase;
-import com.hexagonal.notice.domain.port.in.user.DeleteUserUseCase;
-import com.hexagonal.notice.domain.port.in.user.RetrieveUserUseCase;
-import com.hexagonal.notice.domain.port.in.user.UpdateUserUseCase;
+import com.hexagonal.notice.domain.ports.in.user.CreateUserUseCase;
+import com.hexagonal.notice.domain.ports.in.user.DeleteUserUseCase;
+import com.hexagonal.notice.domain.ports.in.user.RetrieveUserUseCase;
+import com.hexagonal.notice.domain.ports.in.user.UpdateUserUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

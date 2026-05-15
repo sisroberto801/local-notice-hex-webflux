@@ -1,9 +1,9 @@
 package com.hexagonal.notice.application.service;
 
 import com.hexagonal.notice.domain.model.Profile;
-import com.hexagonal.notice.domain.port.in.profile.CreateProfileUseCase;
-import com.hexagonal.notice.domain.port.in.profile.DeleteProfileUseCase;
-import com.hexagonal.notice.domain.port.in.profile.RetrieveProfileUseCase;
+import com.hexagonal.notice.domain.ports.in.profile.CreateProfileUseCase;
+import com.hexagonal.notice.domain.ports.in.profile.DeleteProfileUseCase;
+import com.hexagonal.notice.domain.ports.in.profile.RetrieveProfileUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

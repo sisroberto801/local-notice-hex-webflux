@@ -1,6 +1,6 @@
 package com.hexagonal.notice.infrastructure.security;
 
-import com.hexagonal.notice.domain.port.in.user.RetrieveUserUseCase;
+import com.hexagonal.notice.domain.ports.in.user.RetrieveUserUseCase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

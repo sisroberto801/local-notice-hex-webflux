@@ -1,8 +1,8 @@
 package com.hexagonal.notice.infrastructure.repository.adapter;
 
 import com.hexagonal.notice.domain.model.Task;
-import com.hexagonal.notice.domain.port.out.TaskRepositoryPort;
-import com.hexagonal.notice.infrastructure.entity.TaskEntity;
+import com.hexagonal.notice.domain.ports.out.TaskRepositoryPort;
+import com.hexagonal.notice.infrastructure.entities.TaskEntity;
 import com.hexagonal.notice.infrastructure.mapper.TaskMapper;
 import com.hexagonal.notice.infrastructure.repository.R2dbcTaskRepository;
 import org.springframework.stereotype.Repository;

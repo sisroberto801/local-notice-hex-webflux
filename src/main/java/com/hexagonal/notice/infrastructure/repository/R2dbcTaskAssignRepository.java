@@ -1,6 +1,6 @@
 package com.hexagonal.notice.infrastructure.repository;
 
-import com.hexagonal.notice.infrastructure.entity.TaskAssignEntity;
+import com.hexagonal.notice.infrastructure.entities.TaskAssignEntity;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;

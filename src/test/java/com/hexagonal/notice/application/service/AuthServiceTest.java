@@ -2,7 +2,7 @@ package com.hexagonal.notice.application.service;
 
 import com.hexagonal.notice.domain.model.AuthenticationCommand;
 import com.hexagonal.notice.domain.model.AuthenticationResult;
-import com.hexagonal.notice.domain.port.in.user.RetrieveUserUseCase;
+import com.hexagonal.notice.domain.ports.in.user.RetrieveUserUseCase;
 import com.hexagonal.notice.domain.model.User;
 import com.hexagonal.notice.infrastructure.config.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;

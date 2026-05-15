@@ -1,10 +1,10 @@
 package com.hexagonal.notice.application.service;
 
 import com.hexagonal.notice.domain.model.Task;
-import com.hexagonal.notice.domain.port.in.task.CreateTaskUseCase;
-import com.hexagonal.notice.domain.port.in.task.RetrieveTaskUseCase;
-import com.hexagonal.notice.domain.port.in.task.UpdateTaskUseCase;
-import com.hexagonal.notice.domain.port.in.task.DeleteTaskUseCase;
+import com.hexagonal.notice.domain.ports.in.task.CreateTaskUseCase;
+import com.hexagonal.notice.domain.ports.in.task.RetrieveTaskUseCase;
+import com.hexagonal.notice.domain.ports.in.task.UpdateTaskUseCase;
+import com.hexagonal.notice.domain.ports.in.task.DeleteTaskUseCase;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;

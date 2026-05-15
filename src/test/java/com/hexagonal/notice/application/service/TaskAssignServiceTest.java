@@ -1,9 +1,9 @@
 package com.hexagonal.notice.application.service;
 
 import com.hexagonal.notice.domain.model.TaskAssign;
-import com.hexagonal.notice.domain.port.in.taskassign.CreateTaskAssignUseCase;
-import com.hexagonal.notice.domain.port.in.taskassign.DeleteTaskAssignUseCase;
-import com.hexagonal.notice.domain.port.in.taskassign.RetrieveTaskAssignUseCase;
+import com.hexagonal.notice.domain.ports.in.taskassign.CreateTaskAssignUseCase;
+import com.hexagonal.notice.domain.ports.in.taskassign.DeleteTaskAssignUseCase;
+import com.hexagonal.notice.domain.ports.in.taskassign.RetrieveTaskAssignUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

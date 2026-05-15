@@ -2,9 +2,9 @@ package com.hexagonal.notice.application.service;
 
 import com.hexagonal.notice.domain.model.AuthenticationCommand;
 import com.hexagonal.notice.domain.model.AuthenticationResult;
-import com.hexagonal.notice.domain.port.in.auth.AuthenticateUserUseCase;
-import com.hexagonal.notice.domain.port.in.user.RetrieveUserUseCase;
-import com.hexagonal.notice.infrastructure.config.JwtUtil;
+import com.hexagonal.notice.domain.ports.in.auth.AuthenticateUserUseCase;
+import com.hexagonal.notice.domain.ports.in.user.RetrieveUserUseCase;
+import com.hexagonal.notice.domain.ports.out.GenerateTokenPort;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -21,16 +21,16 @@ public class AuthService implements AuthenticateUserUseCase {
 
     private final ReactiveAuthenticationManager authenticationManager;
     private final RetrieveUserUseCase retrieveUserUseCase;
-    private final JwtUtil jwtUtil;
+    private final GenerateTokenPort generateTokenPort;
 
     public AuthService(
             ReactiveAuthenticationManager authenticationManager,
             @Qualifier("retrieveUserBean") RetrieveUserUseCase retrieveUserUseCase,
-            JwtUtil jwtUtil
+            GenerateTokenPort generateTokenPort
     ) {
         this.authenticationManager = authenticationManager;
         this.retrieveUserUseCase = retrieveUserUseCase;
-        this.jwtUtil = jwtUtil;
+        this.generateTokenPort = generateTokenPort;
     }
 
     @Override
@@ -44,25 +44,20 @@ public class AuthService implements AuthenticateUserUseCase {
                 )
         ).flatMap(auth -> {
             return retrieveUserUseCase.getUserByUsername(command.getUsername())
-                    .map(user -> {
-                        try {
-                            UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
-                                    .username(user.getUsername())
-                                    .password(user.getPassword())
-                                    .authorities(Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_USER")))
-                                    .build();
+                    .flatMap(user -> {
+                        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+                                .username(user.getUsername())
+                                .password(user.getPassword())
+                                .authorities(Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_USER")))
+                                .build();
 
-                            final String jwt = jwtUtil.generateToken(userDetails);
-
-                            log.info("User authenticated successfully: {}", command.getUsername());
-
-                            return AuthenticationResult.builder()
-                                    .token(jwt)
-                                    .build();
-                        } catch (Exception e) {
-                            log.error("Error generating JWT token for user: {}", command.getUsername(), e);
-                            throw new RuntimeException("Error generating token");
-                        }
+                        return generateTokenPort.generateToken(userDetails)
+                                .map(jwt -> {
+                                    log.info("User authenticated successfully: {}", command.getUsername());
+                                    return AuthenticationResult.builder()
+                                            .token(jwt)
+                                            .build();
+                                });
                     });
         }).onErrorResume(e -> {
             log.error("Authentication failed for user: {}", command.getUsername(), e);

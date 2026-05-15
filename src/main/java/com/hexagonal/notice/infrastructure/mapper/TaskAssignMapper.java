@@ -1,7 +1,7 @@
 package com.hexagonal.notice.infrastructure.mapper;
 
 import com.hexagonal.notice.domain.model.TaskAssign;
-import com.hexagonal.notice.infrastructure.entity.TaskAssignEntity;
+import com.hexagonal.notice.infrastructure.entities.TaskAssignEntity;
 import org.springframework.stereotype.Component;
 
 @Component

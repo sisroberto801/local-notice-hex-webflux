@@ -1,9 +1,9 @@
 package com.hexagonal.notice.application.service;
 
 import com.hexagonal.notice.domain.model.Profile;
-import com.hexagonal.notice.domain.port.in.profile.CreateProfileUseCase;
-import com.hexagonal.notice.domain.port.in.profile.DeleteProfileUseCase;
-import com.hexagonal.notice.domain.port.in.profile.RetrieveProfileUseCase;
+import com.hexagonal.notice.domain.ports.in.profile.CreateProfileUseCase;
+import com.hexagonal.notice.domain.ports.in.profile.DeleteProfileUseCase;
+import com.hexagonal.notice.domain.ports.in.profile.RetrieveProfileUseCase;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
