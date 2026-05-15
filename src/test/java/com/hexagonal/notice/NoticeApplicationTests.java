@@ -40,14 +40,14 @@ class NoticeApplicationTests extends BaseTest {
         WebTestClient authenticatedClient = webTestClientWithAuth(token);
 
         authenticatedClient.get()
-                .uri("/api/users/1")
+                .uri("/api/users/999")
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectBody()
                 .jsonPath("$.status").isEqualTo(404)
                 .jsonPath("$.error").isEqualTo("UserNotFoundException")
                 .jsonPath("$.message").isEqualTo("User not found")
-                .jsonPath("$.path").isEqualTo("/api/users/1");
+                .jsonPath("$.path").isEqualTo("/api/users/999");
     }
 
     @Test

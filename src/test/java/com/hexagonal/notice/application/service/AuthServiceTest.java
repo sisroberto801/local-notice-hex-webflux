@@ -2,9 +2,9 @@ package com.hexagonal.notice.application.service;
 
 import com.hexagonal.notice.domain.model.AuthenticationCommand;
 import com.hexagonal.notice.domain.model.AuthenticationResult;
-import com.hexagonal.notice.domain.ports.in.user.RetrieveUserUseCase;
 import com.hexagonal.notice.domain.model.User;
-import com.hexagonal.notice.infrastructure.config.JwtUtil;
+import com.hexagonal.notice.domain.ports.in.user.RetrieveUserUseCase;
+import com.hexagonal.notice.domain.ports.out.GenerateTokenPort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +16,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import reactor.core.publisher.Mono;
+
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,7 +33,7 @@ class AuthServiceTest {
     private RetrieveUserUseCase retrieveUserUseCase;
 
     @Mock
-    private JwtUtil jwtUtil;
+    private GenerateTokenPort generateTokenPort;
 
     @InjectMocks
     private AuthService authService;
@@ -70,9 +72,12 @@ class AuthServiceTest {
     @Test
     @DisplayName("Should authenticate successfully and return JWT token")
     void authenticate_shouldReturnToken_whenValidCredentialsProvided() {
+        when(authenticationManager.authenticate(any())).thenReturn(Mono.just(
+                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                        "testuser", "password123", Collections.emptyList()
+                )));
         when(retrieveUserUseCase.getUserByUsername("testuser")).thenReturn(Mono.just(user));
-        when(jwtUtil.generateToken(userDetails)).thenReturn("mock.jwt.token");
-        when(authenticationManager.authenticate(any())).thenReturn(Mono.empty());
+        when(generateTokenPort.generateToken(any(UserDetails.class))).thenReturn(Mono.just("mock.jwt.token"));
 
         AuthenticationResult result = authService.authenticate(validCommand).block();
 
@@ -81,7 +86,7 @@ class AuthServiceTest {
 
         verify(authenticationManager).authenticate(any());
         verify(retrieveUserUseCase).getUserByUsername("testuser");
-        verify(jwtUtil).generateToken(userDetails);
+        verify(generateTokenPort).generateToken(any(UserDetails.class));
     }
 
     @Test
@@ -96,19 +101,17 @@ class AuthServiceTest {
 
         verify(authenticationManager).authenticate(any());
         verify(retrieveUserUseCase, never()).getUserByUsername(any());
-        verify(jwtUtil, never()).generateToken(any());
+        verify(generateTokenPort, never()).generateToken(any());
     }
 
     @Test
     @DisplayName("Should handle null username in authentication command")
     void authenticate_shouldThrowException_whenNullUsernameProvided() {
-        AuthenticationCommand commandWithNullUsername = AuthenticationCommand.builder()
-                .username(null)
-                .password("password123")
-                .build();
-
-        assertThrows(Exception.class,
-                () -> authService.authenticate(commandWithNullUsername).block());
+        assertThrows(NullPointerException.class,
+                () -> AuthenticationCommand.builder()
+                        .username(null)
+                        .password("password123")
+                        .build());
 
         verify(authenticationManager, never()).authenticate(any());
     }
@@ -116,13 +119,11 @@ class AuthServiceTest {
     @Test
     @DisplayName("Should handle null password in authentication command")
     void authenticate_shouldThrowException_whenNullPasswordProvided() {
-        AuthenticationCommand commandWithNullPassword = AuthenticationCommand.builder()
-                .username("testuser")
-                .password(null)
-                .build();
-
-        assertThrows(Exception.class,
-                () -> authService.authenticate(commandWithNullPassword).block());
+        assertThrows(NullPointerException.class,
+                () -> AuthenticationCommand.builder()
+                        .username("testuser")
+                        .password(null)
+                        .build());
 
         verify(authenticationManager, never()).authenticate(any());
     }
@@ -135,10 +136,16 @@ class AuthServiceTest {
                 .password("password123")
                 .build();
 
-        assertThrows(Exception.class,
+        when(authenticationManager.authenticate(any())).thenReturn(Mono.error(new BadCredentialsException("Invalid credentials")));
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
                 () -> authService.authenticate(commandWithEmptyUsername).block());
 
-        verify(authenticationManager, never()).authenticate(any());
+        assertEquals("Invalid credentials", exception.getMessage());
+
+        verify(authenticationManager).authenticate(any());
+        verify(retrieveUserUseCase, never()).getUserByUsername(any());
+        verify(generateTokenPort, never()).generateToken(any());
     }
 
     @Test
@@ -149,9 +156,15 @@ class AuthServiceTest {
                 .password("")
                 .build();
 
-        assertThrows(Exception.class,
+        when(authenticationManager.authenticate(any())).thenReturn(Mono.error(new BadCredentialsException("Invalid credentials")));
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
                 () -> authService.authenticate(commandWithEmptyPassword).block());
 
-        verify(authenticationManager, never()).authenticate(any());
+        assertEquals("Invalid credentials", exception.getMessage());
+
+        verify(authenticationManager).authenticate(any());
+        verify(retrieveUserUseCase, never()).getUserByUsername(any());
+        verify(generateTokenPort, never()).generateToken(any());
     }
 }

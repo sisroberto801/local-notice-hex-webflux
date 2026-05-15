@@ -20,20 +20,6 @@ import java.time.LocalDateTime;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-/**
- * Unit Tests for ProfileService
- * <p>
- * These tests verify the business logic of ProfileService in isolation,
- * mocking all external dependencies to ensure pure unit testing.
- * <p>
- * Test Coverage:
- * - Profile creation
- * - Profile retrieval by ID
- * - Profile retrieval by User ID
- * - Profile retrieval (all profiles)
- * - Profile deletion
- * - Error handling scenarios
- */
 @ExtendWith(MockitoExtension.class)
 class ProfileServiceTest {
 

@@ -22,21 +22,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-/**
- * Unit Tests for TaskService
- * <p>
- * These tests verify the business logic of TaskService in isolation,
- * mocking all external dependencies to ensure pure unit testing.
- * <p>
- * Test Coverage:
- * - Task creation
- * - Task retrieval by ID
- * - Task retrieval (all tasks)
- * - Task retrieval by status
- * - Task updates
- * - Task deletion
- * - Error handling scenarios
- */
 @ExtendWith(MockitoExtension.class)
 class TaskServiceTest {
 

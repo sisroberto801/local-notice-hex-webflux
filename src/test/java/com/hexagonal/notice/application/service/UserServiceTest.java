@@ -22,20 +22,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-/**
- * Unit Tests for UserService
- * <p>
- * These tests verify the business logic of UserService in isolation,
- * mocking all external dependencies to ensure pure unit testing.
- * <p>
- * Test Coverage:
- * - User creation
- * - User retrieval by ID
- * - User retrieval (all users)
- * - User updates
- * - User deletion
- * - Error handling scenarios
- */
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 

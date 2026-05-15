@@ -38,7 +38,7 @@ public class UserController {
         return userService.getUserById(id)
                 .map(userMapper::toUserResponse)
                 .map(ResponseEntity::ok)
-                .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
+                .switchIfEmpty(Mono.error(new com.hexagonal.notice.infrastructure.exception.UserNotFoundException("User not found")));
     }
 
     @GetMapping

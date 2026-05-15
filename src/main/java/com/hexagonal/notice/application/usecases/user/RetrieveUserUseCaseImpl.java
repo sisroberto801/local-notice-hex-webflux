@@ -17,7 +17,8 @@ public class RetrieveUserUseCaseImpl implements RetrieveUserUseCase {
 
     @Override
     public Mono<User> getUserById(Long id) {
-        return userRepository.findById(id);
+        return userRepository.findById(id)
+                .switchIfEmpty(Mono.empty());
     }
 
     @Override
