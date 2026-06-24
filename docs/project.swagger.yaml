@@ -276,7 +276,7 @@ components:
           format: password
         status:
           type: boolean
-          description: User account status (default: true)
+          description: "User account status (default: true)"
           example: true
       required:
         - username

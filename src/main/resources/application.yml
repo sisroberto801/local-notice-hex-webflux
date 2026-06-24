@@ -3,14 +3,17 @@ spring:
   application:
     name: notice
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/notice_db
-    username: postgres
-    password: postgres
+    url: ${SPRING_R2DBC_URL}
+    username: ${SPRING_R2DBC_USERNAME}
+    password: ${SPRING_R2DBC_PASSWORD}
   flyway:
     enabled: true
     baseline-on-migrate: true
     clean-disabled: false
     locations: classpath:db/migration
+    url: ${SPRING_FLYWAY_URL}
+    user: ${SPRING_FLYWAY_USER}
+    password: ${SPRING_FLYWAY_PASSWORD}
   doc:
     swagger-ui:
       path: /swagger-ui.html
@@ -27,8 +30,8 @@ spring:
 
 # JWT Configuration
 jwt:
-  secret: mySecretKeyForJWTTokenGenerationThatShouldBeVeryLongAndSecureForProductionUse
-  expiration: 300000 # 5 minutes in milliseconds
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION}
 
 # Server Configuration
 server:
