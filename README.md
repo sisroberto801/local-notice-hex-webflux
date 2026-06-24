@@ -47,6 +47,86 @@ mvn clean compile package
 mvn spring-boot:run
 ```
 
+## Docker Instructions
+
+### Prerequisites
+- Docker and Docker Compose installed
+- Environment variables configured (see `.env.example`)
+
+### Quick Start with Docker
+
+```bash
+# Start all services (database + application)
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+### Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+POSTGRES_DB=notice_db
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+SPRING_R2DBC_URL=r2dbc:postgresql://postgres:5432/notice_db
+SPRING_R2DBC_USERNAME=postgres
+SPRING_R2DBC_PASSWORD=postgres
+SPRING_FLYWAY_URL=jdbc:postgresql://postgres:5432/notice_db
+SPRING_FLYWAY_USER=postgres
+SPRING_FLYWAY_PASSWORD=postgres
+JWT_SECRET=your-secret-key
+JWT_EXPIRATION=86400
+```
+
+### Docker Commands
+
+```bash
+# Build and start services
+docker-compose up --build
+
+# Start only the database
+docker-compose up postgres
+
+# Access the application
+curl http://localhost:8000/api/users
+
+# Access PostgreSQL directly
+docker-compose exec postgres psql -U postgres -d notice_db
+
+# View running containers
+docker-compose ps
+
+# Remove volumes (warning: this deletes all data)
+docker-compose down -v
+
+# Remove volumes and all images (complete cleanup)
+docker-compose down --rmi all
+```
+
+### Services
+
+- **PostgreSQL**: `localhost:5432`
+- **Application**: `localhost:8000`
+- **Swagger UI**: http://localhost:8000/swagger-ui.html
+
+### Development Workflow
+
+For development with hot reload, you can run the database with Docker and the application locally:
+
+```bash
+# Start only PostgreSQL
+docker-compose up postgres -d
+
+# Run application locally (in another terminal)
+mvn spring-boot:run
+```
+
 ## API Documentation
 
 Once the application is running, you can access the Swagger UI at:
