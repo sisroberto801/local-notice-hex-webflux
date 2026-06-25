@@ -2,7 +2,31 @@
 
 **Repository:** https://github.com/sisroberto801/local-notice-hex-webflux.git
 
-## Hexagonal Architecture
+## Quick Start
+
+### Option 1: Local Development (Terminal)
+```bash
+cp .env.localhost .env
+mvn clean compile package
+export $(grep -v '^#' .env | xargs)
+mvn spring-boot:run
+```
+
+### Option 2: Docker Compose
+```bash
+cp .env.docker .env
+docker-compose up postgres -d
+docker-compose up
+```
+
+### Option 3: IntelliJ IDEA
+```bash
+cp .env.docker .env
+docker-compose up postgres -d
+# Then run the application from IntelliJ IDEA
+```
+
+## Project Structure
 
 The project follows a hexagonal (clean architecture) with the following layers:
 
@@ -22,76 +46,69 @@ src/main/java/com/hexagonal/notice/
     └── repository/                # Repository implementations
 ```
 
-### Architecture Flow:
+### Architecture Flow
 1. **Controller** receives HTTP requests
 2. **Service** coordinates use cases
 3. **Domain** contains pure business logic
 4. **Infrastructure** implements technical details (DB, external APIs)
 
-## Run Application
+## Environment Configuration
 
+The project uses different environment files:
+- `.env.localhost` - For local terminal execution
+- `.env.docker` - For Docker Compose or IntelliJ IDEA
+- `.env.example` - Template with all available variables
+
+## Running the Application
+
+### Local Development (Terminal)
 ```bash
-# Create database
-createdb notice_db
+# Copy environment configuration
+cp .env.localhost .env
 
-# Run migrations
-mvn flyway:clean flyway:migrate
-
-# Get information
-mvn flyway:info
-
-# execute maven on application
+# Build the project
 mvn clean compile package
 
-# Start application
+# Export environment variables and run the application
+export $(grep -v '^#' .env | xargs)
 mvn spring-boot:run
 ```
 
-## Docker Instructions
+### Docker Compose
+```bash
+# Copy Docker environment configuration
+cp .env.docker .env
 
-### Prerequisites
-- Docker and Docker Compose installed
-- Environment variables configured (see `.env.example`)
+# Remove all images
+docker-compose down --rmi all
 
-### Quick Start with Docker
+# Start all services
+ocker-compose up -d --build   
+```
+
+### IntelliJ IDEA
+```bash
+# Copy Docker environment configuration
+cp .env.docker .env
+
+# load all variables from .env into the Environment variables of Intell Idea
+# Run the application from IntelliJ IDEA
+```
+
+## Docker Commands
 
 ```bash
-# Start all services (database + application)
-docker-compose up -d
+# Build and start services
+ocker-compose up -d --build   
+
+# Start only the database
+docker-compose up postgres
 
 # View logs
 docker-compose logs -f
 
 # Stop services
 docker-compose down
-```
-
-### Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-POSTGRES_DB=notice_db
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-SPRING_R2DBC_URL=r2dbc:postgresql://postgres:5432/notice_db
-SPRING_R2DBC_USERNAME=postgres
-SPRING_R2DBC_PASSWORD=postgres
-SPRING_FLYWAY_URL=jdbc:postgresql://postgres:5432/notice_db
-SPRING_FLYWAY_USER=postgres
-SPRING_FLYWAY_PASSWORD=postgres
-JWT_SECRET=your-secret-key
-JWT_EXPIRATION=86400
-```
-
-### Docker Commands
-
-```bash
-# Build and start services
-docker-compose up --build
-
-# Start only the database
-docker-compose up postgres
 
 # Access the application
 curl http://localhost:8000/api/users
@@ -109,32 +126,18 @@ docker-compose down -v
 docker-compose down --rmi all
 ```
 
-### Services
+## Services
 
 - **PostgreSQL**: `localhost:5432`
 - **Application**: `localhost:8000`
 - **Swagger UI**: http://localhost:8000/swagger-ui.html
 
-### Development Workflow
-
-For development with hot reload, you can run the database with Docker and the application locally:
-
-```bash
-# Start only PostgreSQL
-docker-compose up postgres -d
-
-# Run application locally (in another terminal)
-mvn spring-boot:run
-```
-
 ## API Documentation
 
-Once the application is running, you can access the Swagger UI at:
+Access the interactive API documentation:
 
-- **Swagger UI**: http://localhost:8080/swagger-ui.html
-- **OpenAPI JSON**: http://localhost:8080/v3/api-docs
-
-The Swagger documentation provides interactive API testing and detailed endpoint information.
+- **Swagger UI**: http://localhost:8000/swagger-ui.html
+- **OpenAPI JSON**: http://localhost:8000/v3/api-docs
 
 ### REST Endpoints
 
@@ -146,7 +149,9 @@ The Swagger documentation provides interactive API testing and detailed endpoint
 - `DELETE /api/users/{id}` - Delete user
 - `GET /api/users/email/{email}` - Get user by email (deprecated)
 
-#### User Model
+#### Data Models
+
+**User Model**
 ```json
 {
   "id": 1,
@@ -158,7 +163,7 @@ The Swagger documentation provides interactive API testing and detailed endpoint
 }
 ```
 
-#### Profile Model
+**Profile Model**
 ```json
 {
   "id": 1,
@@ -176,15 +181,33 @@ The Swagger documentation provides interactive API testing and detailed endpoint
 
 ## Database
 
-- PostgreSQL: `notice_db`
-- User: `postgres`
-- Password: `postgres`
-- Port: `5432`
+- **Database**: PostgreSQL `notice_db`
+- **User**: `postgres`
+- **Password**: `postgres`
+- **Port**: `5432`
 
-## Migrations
+### Database Migrations
 
 Migrations are located in `src/main/resources/db/migration/`:
 - `database_v1.sql` - Initial tables (users, profiles, tasks, task_assignments)
+
+### Migration Commands
+```bash
+# Run migrations
+mvn flyway:clean flyway:migrate
+
+# Get migration information
+mvn flyway:info
+```
+
+## Technology Stack
+
+- **Framework**: Spring Boot 4.0.6
+- **Web**: Spring Reactive Web (WebFlux)
+- **Database**: PostgreSQL with Spring Data R2DBC
+- **Migrations**: Flyway
+- **Architecture**: Hexagonal (Clean Architecture)
+- **Build Tool**: Maven
 
 ## Reference Documentation
 For further reference, please consider the following sections:
