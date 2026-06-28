@@ -2,8 +2,8 @@ package com.hexagonal.notice.infrastructure.controller;
 
 import com.hexagonal.notice.domain.model.AuthenticationCommand;
 import com.hexagonal.notice.domain.ports.in.auth.AuthenticateUserUseCase;
-import com.hexagonal.notice.infrastructure.dto.AuthenticationRequest;
-import com.hexagonal.notice.infrastructure.dto.AuthenticationResponse;
+import com.hexagonal.notice.domain.model.AuthenticationRequest;
+import com.hexagonal.notice.domain.model.AuthenticationResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

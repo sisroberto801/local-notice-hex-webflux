@@ -6,7 +6,7 @@
 
 ### Option 1: Local Development (Terminal)
 ```bash
-cp .env.localhost .env
+cp .env.local .env
 mvn clean compile package
 export $(grep -v '^#' .env | xargs)
 mvn spring-boot:run
@@ -14,14 +14,14 @@ mvn spring-boot:run
 
 ### Option 2: Docker Compose
 ```bash
-cp .env.docker .env
+cp .env.example .env
 docker-compose up postgres -d
 docker-compose up
 ```
 
 ### Option 3: IntelliJ IDEA
 ```bash
-cp .env.docker .env
+cp .env.example .env
 docker-compose up postgres -d
 # Then run the application from IntelliJ IDEA
 ```
@@ -64,7 +64,7 @@ The project uses different environment files:
 ### Local Development (Terminal)
 ```bash
 # Copy environment configuration
-cp .env.localhost .env
+cp .env.local .env
 
 # Build the project
 mvn clean compile package
@@ -77,7 +77,7 @@ mvn spring-boot:run
 ### Docker Compose
 ```bash
 # Copy Docker environment configuration
-cp .env.docker .env
+cp .env.example .env
 
 # Remove all images
 docker-compose down --rmi all
@@ -89,7 +89,7 @@ ocker-compose up -d --build
 ### IntelliJ IDEA
 ```bash
 # Copy Docker environment configuration
-cp .env.docker .env
+cp .env.example .env
 
 # load all variables from .env into the Environment variables of Intell Idea
 # Run the application from IntelliJ IDEA

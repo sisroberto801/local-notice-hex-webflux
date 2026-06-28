@@ -2,8 +2,8 @@ package com.hexagonal.notice.infrastructure.controller;
 
 import com.hexagonal.notice.application.service.UserService;
 import com.hexagonal.notice.domain.model.User;
-import com.hexagonal.notice.infrastructure.dto.UserRequest;
-import com.hexagonal.notice.infrastructure.dto.UserResponse;
+import com.hexagonal.notice.domain.model.UserRequest;
+import com.hexagonal.notice.domain.model.UserResponse;
 import com.hexagonal.notice.infrastructure.mapper.UserMapper;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;

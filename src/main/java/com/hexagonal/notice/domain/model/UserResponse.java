@@ -1,4 +1,4 @@
-package com.hexagonal.notice.infrastructure.dto;
+package com.hexagonal.notice.domain.model;
 
 import lombok.*;
 

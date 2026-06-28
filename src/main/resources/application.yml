@@ -27,6 +27,11 @@ spring:
     webflux:
       openapi:
         enabled: true
+springdoc:
+  swagger-ui:
+    url: /v3/api-docs.yaml
+  packages-to-scan: com.hexagonal.notice.infrastructure.controller
+  paths-to-match: /api/**
 
 # JWT Configuration
 jwt:

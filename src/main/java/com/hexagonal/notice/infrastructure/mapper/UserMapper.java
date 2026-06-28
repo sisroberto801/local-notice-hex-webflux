@@ -1,8 +1,8 @@
 package com.hexagonal.notice.infrastructure.mapper;
 
 import com.hexagonal.notice.domain.model.User;
-import com.hexagonal.notice.infrastructure.dto.UserRequest;
-import com.hexagonal.notice.infrastructure.dto.UserResponse;
+import com.hexagonal.notice.domain.model.UserRequest;
+import com.hexagonal.notice.domain.model.UserResponse;
 import com.hexagonal.notice.infrastructure.entities.UserEntity;
 import org.springframework.stereotype.Component;
 
