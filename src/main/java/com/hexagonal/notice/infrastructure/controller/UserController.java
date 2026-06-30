@@ -4,6 +4,7 @@ import com.hexagonal.notice.application.service.UserService;
 import com.hexagonal.notice.domain.model.User;
 import com.hexagonal.notice.domain.model.UserRequest;
 import com.hexagonal.notice.domain.model.UserResponse;
+import com.hexagonal.notice.infrastructure.exception.UserNotFoundException;
 import com.hexagonal.notice.infrastructure.mapper.UserMapper;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,7 @@ public class UserController {
         return userService.getUserById(id)
                 .map(userMapper::toUserResponse)
                 .map(ResponseEntity::ok)
-                .switchIfEmpty(Mono.error(new com.hexagonal.notice.infrastructure.exception.UserNotFoundException("User not found")));
+                .switchIfEmpty(Mono.error(new UserNotFoundException("User not found")));
     }
 
     @GetMapping

@@ -9,11 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -45,10 +47,10 @@ public class AuthService implements AuthenticateUserUseCase {
         ).flatMap(auth -> {
             return retrieveUserUseCase.getUserByUsername(command.getUsername())
                     .flatMap(user -> {
-                        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+                        UserDetails userDetails = User.builder()
                                 .username(user.getUsername())
                                 .password(user.getPassword())
-                                .authorities(Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_USER")))
+                                .authorities(List.of(new SimpleGrantedAuthority("ROLE_USER")))
                                 .build();
 
                         return generateTokenPort.generateToken(userDetails)

@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public Mono<ResponseEntity<?>> fatalErrorUnexpectedException(Exception e, ServerWebExchange exchange) {
-        log.info("internal server {}", exchange.getRequest().getURI().getPath());
+        log.error("internal server {}", exchange.getRequest().getURI().getPath(), e);
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         ErrorMessage data = new ErrorMessage(e, exchange.getRequest().getURI().getPath(), status.value());
         return Mono.just(new ResponseEntity<>(data, status));
