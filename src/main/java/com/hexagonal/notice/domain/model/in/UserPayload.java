@@ -1,4 +1,4 @@
-package com.hexagonal.notice.domain.model;
+package com.hexagonal.notice.domain.model.in;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequest {
+public class UserPayload {
 
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
@@ -21,5 +21,5 @@ public class UserRequest {
     @Size(min = 6, max = 100, message = "Password must be between 6 and 100 characters")
     private String password;
 
-    private Boolean status;
+//    private Boolean status;
 }

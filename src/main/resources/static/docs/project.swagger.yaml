@@ -309,10 +309,6 @@ components:
           minLength: 6
           maxLength: 100
           format: password
-        status:
-          type: boolean
-          description: "User account status (default: true)"
-          example: true
       required:
         - username
         - password

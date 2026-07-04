@@ -2,8 +2,7 @@ package com.hexagonal.notice.infrastructure.controller;
 
 import com.hexagonal.notice.application.service.UserService;
 import com.hexagonal.notice.domain.model.User;
-import com.hexagonal.notice.domain.model.UserRequest;
-import com.hexagonal.notice.domain.model.UserResponse;
+import com.hexagonal.notice.domain.model.in.UserPayload;
 import com.hexagonal.notice.infrastructure.exception.UserNotFoundException;
 import com.hexagonal.notice.infrastructure.mapper.UserMapper;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -21,23 +20,24 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
 
-    public UserController(UserService userService, UserMapper userMapper) {
+    public UserController(
+            UserService userService,
+            UserMapper userMapper
+    ) {
         this.userService = userService;
         this.userMapper = userMapper;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<UserResponse> createUser(@RequestBody UserRequest request) {
-        User user = userMapper.toUserFromRequest(request);
-        return userService.createUser(user)
-                .map(userMapper::toUserResponse);
+    public Mono<ResponseEntity<User>> createUser(@RequestBody UserPayload request) {
+        return userService.createUser(userMapper.fromPayload(request))
+                .map(ResponseEntity::ok);
     }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<UserResponse>> getUserById(@PathVariable Long id) {
+    public Mono<ResponseEntity<User>> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
-                .map(userMapper::toUserResponse)
                 .map(ResponseEntity::ok)
                 .switchIfEmpty(Mono.error(new UserNotFoundException("User not found")));
     }
@@ -45,18 +45,19 @@ public class UserController {
     @GetMapping
     @SecurityRequirement(name = "Bearer Token")
     @PreAuthorize("hasRole('USER')")
-    public Flux<UserResponse> getAllUsers() {
+    public Flux<ResponseEntity<User>> getAllUsers() {
         return userService.getAllUsers()
-                .map(userMapper::toUserResponse);
+                .map(ResponseEntity::ok);
     }
 
     @PutMapping("/{id}")
     @SecurityRequirement(name = "Bearer Token")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public Mono<ResponseEntity<UserResponse>> updateUser(@PathVariable Long id, @RequestBody UserRequest request) {
-        User user = userMapper.toUserFromRequest(request);
-        return userService.updateUser(id, user)
-                .map(userMapper::toUserResponse)
+    public Mono<ResponseEntity<User>> updateUser(
+            @PathVariable Long id,
+            @RequestBody UserPayload request
+    ) {
+        return userService.updateUser(id, userMapper.fromPayload(request))
                 .map(ResponseEntity::ok);
     }
 

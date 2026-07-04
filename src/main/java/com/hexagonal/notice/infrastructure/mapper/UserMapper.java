@@ -1,59 +1,36 @@
 package com.hexagonal.notice.infrastructure.mapper;
 
 import com.hexagonal.notice.domain.model.User;
-import com.hexagonal.notice.domain.model.UserRequest;
-import com.hexagonal.notice.domain.model.UserResponse;
+import com.hexagonal.notice.domain.model.in.UserPayload;
 import com.hexagonal.notice.infrastructure.entities.UserEntity;
-import org.springframework.stereotype.Component;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.time.LocalDateTime;
 
-@Component
-public class UserMapper {
+@Mapper(componentModel = "spring")
+public interface UserMapper {
 
-    public UserEntity toEntity(User user) {
-        if (user == null) return null;
+    UserEntity toEntity(User user);
 
-        return UserEntity.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .status(user.getStatus() != null ? user.getStatus() : true)
-                .createdAt(user.getCreatedAt() != null ? user.getCreatedAt() : LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
-    }
+    User toDomain(UserEntity entity);
 
-    public User toDomain(UserEntity entity) {
-        if (entity == null) return null;
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "status", expression = "java(Boolean.TRUE)")
+    User fromPayload(UserPayload request);
 
-        return User.builder()
-                .id(entity.getId())
-                .username(entity.getUsername())
-                .password(entity.getPassword())
-                .status(entity.getStatus())
-                .createdAt(entity.getCreatedAt())
-                .updatedAt(entity.getUpdatedAt())
-                .build();
-    }
-
-    public User toUserFromRequest(UserRequest request) {
-        return (null == request) ?
-                null :
-                User.builder()
-                        .username(request.getUsername())
-                        .password(request.getPassword())
-                        .status(request.getStatus())
-                        .build();
-    }
-
-    public UserResponse toUserResponse(User user) {
-        return UserResponse.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .status(user.getStatus())
-                .createdAt(user.getCreatedAt())
-                .updatedAt(user.getUpdatedAt())
-                .build();
+    @AfterMapping
+    default void applyEntityDefaults(@MappingTarget UserEntity entity) {
+        if (entity.getStatus() == null) {
+            entity.setStatus(true);
+        }
+        if (entity.getCreatedAt() == null) {
+            entity.setCreatedAt(LocalDateTime.now());
+        }
+        entity.setUpdatedAt(LocalDateTime.now());
     }
 }
