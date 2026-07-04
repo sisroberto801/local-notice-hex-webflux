@@ -1,6 +1,7 @@
 package com.hexagonal.notice.infrastructure.mapper;
 
 import com.hexagonal.notice.domain.model.User;
+import com.hexagonal.notice.domain.model.in.UpdateUserPayload;
 import com.hexagonal.notice.domain.model.in.UserPayload;
 import com.hexagonal.notice.infrastructure.entities.UserEntity;
 import org.mapstruct.AfterMapping;
@@ -18,10 +19,17 @@ public interface UserMapper {
     User toDomain(UserEntity entity);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
+    @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "status", expression = "java(Boolean.TRUE)")
-    User fromPayload(UserPayload request);
+    User createFromPayload(UserPayload request);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "username", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
+    User updateFromPayload(UpdateUserPayload request);
 
     @AfterMapping
     default void applyEntityDefaults(@MappingTarget UserEntity entity) {

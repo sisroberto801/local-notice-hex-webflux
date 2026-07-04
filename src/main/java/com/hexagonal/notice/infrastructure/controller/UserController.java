@@ -2,6 +2,7 @@ package com.hexagonal.notice.infrastructure.controller;
 
 import com.hexagonal.notice.application.service.UserService;
 import com.hexagonal.notice.domain.model.User;
+import com.hexagonal.notice.domain.model.in.UpdateUserPayload;
 import com.hexagonal.notice.domain.model.in.UserPayload;
 import com.hexagonal.notice.infrastructure.exception.UserNotFoundException;
 import com.hexagonal.notice.infrastructure.mapper.UserMapper;
@@ -31,7 +32,7 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<ResponseEntity<User>> createUser(@RequestBody UserPayload request) {
-        return userService.createUser(userMapper.fromPayload(request))
+        return userService.createUser(userMapper.createFromPayload(request))
                 .map(ResponseEntity::ok);
     }
 
@@ -55,9 +56,9 @@ public class UserController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Mono<ResponseEntity<User>> updateUser(
             @PathVariable Long id,
-            @RequestBody UserPayload request
+            @RequestBody UpdateUserPayload request
     ) {
-        return userService.updateUser(id, userMapper.fromPayload(request))
+        return userService.updateUser(id, userMapper.updateFromPayload(request))
                 .map(ResponseEntity::ok);
     }
 

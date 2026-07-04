@@ -316,26 +316,12 @@ components:
     UpdateUserRequest:
       type: object
       properties:
-        username:
-          type: string
-          description: User's unique username
-          example: user
-          minLength: 3
-          maxLength: 50
-        password:
-          type: string
-          description: User's password
-          example: 123456
-          minLength: 6
-          maxLength: 100
-          format: password
         status:
           type: boolean
           description: User account status
           example: true
       required:
-        - username
-        - password
+        - status
 
     ErrorResponse:
       type: object

@@ -52,9 +52,9 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     public Mono<User> update(Long id, User user) {
         return r2dbcUserRepository.findById(id)
                 .flatMap(existingEntity -> {
-                    UserEntity updatedEntity = userMapper.toEntity(user);
-                    updatedEntity.setId(id);
-                    return r2dbcUserRepository.save(updatedEntity);
+                    existingEntity.setStatus(user.getStatus());
+                    existingEntity.setUpdatedAt(user.getUpdatedAt());
+                    return r2dbcUserRepository.save(existingEntity);
                 })
                 .map(userMapper::toDomain);
     }
