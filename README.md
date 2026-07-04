@@ -2,29 +2,28 @@
 
 **Repository:** https://github.com/sisroberto801/local-notice-hex-webflux.git
 
-## Quick Start
+Reactive REST API built with Spring WebFlux and R2DBC, following a hexagonal (clean) architecture. PostgreSQL is used for persistence and Flyway for schema migrations.
 
-### Option 1: Local Development (Terminal)
-```bash
-cp .env.local .env
-mvn clean compile package
-export $(grep -v '^#' .env | xargs)
-mvn spring-boot:run
-```
+## Table of Contents
 
-### Option 2: Docker Compose
-```bash
-cp .env.example .env
-docker-compose up postgres -d
-docker-compose up
-```
+- [Technology Stack](#technology-stack)
+- [Project Structure](#project-structure)
+- [Environment Configuration](#environment-configuration)
+- [Running the Application](#running-the-application)
+- [Docker Commands](#docker-commands)
+- [Services](#services)
+- [API Documentation](#api-documentation)
+- [Database](#database)
+- [Reference Documentation](#reference-documentation)
 
-### Option 3: IntelliJ IDEA
-```bash
-cp .env.example .env
-docker-compose up postgres -d
-# Then run the application from IntelliJ IDEA
-```
+## Technology Stack
+
+- **Framework**: Spring Boot 4.0.7
+- **Web**: Spring Reactive Web (WebFlux)
+- **Database**: PostgreSQL with Spring Data R2DBC
+- **Migrations**: Flyway
+- **Architecture**: Hexagonal (Clean Architecture)
+- **Build Tool**: Maven
 
 ## Project Structure
 
@@ -55,9 +54,11 @@ src/main/java/com/hexagonal/notice/
 ## Environment Configuration
 
 The project uses different environment files:
-- `.env.localhost` - For local terminal execution
-- `.env.docker` - For Docker Compose or IntelliJ IDEA
-- `.env.example` - Template with all available variables
+- `.env.local` - For local terminal execution (host `localhost`)
+- `.env.example` - Template for Docker Compose (uses service name `postgres`)
+- `.env` - Active file read by Docker Compose and Spring (git-ignored)
+
+> When running with Docker, the DB host must be the service name `postgres`, not `localhost`. Inside the container `localhost` points to the app itself, not the database.
 
 ## Running the Application
 
@@ -79,11 +80,16 @@ mvn spring-boot:run
 # Copy Docker environment configuration
 cp .env.example .env
 
-# Remove all images
-docker-compose down --rmi all
+# Start all services (build image + create containers)
+docker compose up -d --build
 
-# Start all services
-ocker-compose up -d --build   
+# If you changed .env, recreate containers so they pick up the new values
+docker compose down
+docker compose up -d --force-recreate
+
+# Full clean rebuild (removes containers, volumes and images, then rebuilds)
+docker compose down --rmi all -v
+docker compose up -d --build --force-recreate
 ```
 
 ### IntelliJ IDEA
@@ -99,31 +105,32 @@ cp .env.example .env
 
 ```bash
 # Build and start services
-ocker-compose up -d --build   
+docker compose up -d --build
 
 # Start only the database
-docker-compose up postgres
+docker compose up postgres -d
 
-# View logs
-docker-compose logs -f
+# View logs (all services / only the app)
+docker compose logs -f
+docker compose logs -f app
 
 # Stop services
-docker-compose down
+docker compose down
 
 # Access the application
 curl http://localhost:8000/api/users
 
 # Access PostgreSQL directly
-docker-compose exec postgres psql -U postgres -d notice_db
+docker compose exec postgres psql -U postgres -d notice_db
 
-# View running containers
-docker-compose ps
+# View running containers (including stopped ones)
+docker compose ps -a
 
 # Remove volumes (warning: this deletes all data)
-docker-compose down -v
+docker compose down -v
 
 # Remove volumes and all images (complete cleanup)
-docker-compose down --rmi all
+docker compose down --rmi all
 ```
 
 ## Services
@@ -199,15 +206,6 @@ mvn flyway:clean flyway:migrate
 # Get migration information
 mvn flyway:info
 ```
-
-## Technology Stack
-
-- **Framework**: Spring Boot 4.0.6
-- **Web**: Spring Reactive Web (WebFlux)
-- **Database**: PostgreSQL with Spring Data R2DBC
-- **Migrations**: Flyway
-- **Architecture**: Hexagonal (Clean Architecture)
-- **Build Tool**: Maven
 
 ## Reference Documentation
 For further reference, please consider the following sections:
