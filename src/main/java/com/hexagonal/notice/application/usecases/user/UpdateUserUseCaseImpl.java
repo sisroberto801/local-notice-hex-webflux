@@ -16,6 +16,7 @@ public class UpdateUserUseCaseImpl implements UpdateUserUseCase {
 
     @Override
     public Mono<User> updateUser(Long id, User user) {
-        return userRepository.update(id, user);
+        return userRepository.update(id, user)
+                .switchIfEmpty(Mono.empty());
     }
 }

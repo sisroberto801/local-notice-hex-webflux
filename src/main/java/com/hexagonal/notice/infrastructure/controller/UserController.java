@@ -45,10 +45,9 @@ public class UserController {
 
     @GetMapping
     @SecurityRequirement(name = "Bearer Token")
-    @PreAuthorize("hasRole('USER')")
-    public Flux<ResponseEntity<User>> getAllUsers() {
-        return userService.getAllUsers()
-                .map(ResponseEntity::ok);
+    @PreAuthorize("hasRole('ADMIN')")
+    public Flux<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     @PutMapping("/{id}")
@@ -59,7 +58,8 @@ public class UserController {
             @RequestBody UpdateUserPayload request
     ) {
         return userService.updateUser(id, userMapper.updateFromPayload(request))
-                .map(ResponseEntity::ok);
+                .map(ResponseEntity::ok)
+                .switchIfEmpty(Mono.error(new UserNotFoundException("User not found")));
     }
 
     @DeleteMapping("/{id}")
