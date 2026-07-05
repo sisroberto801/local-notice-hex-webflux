@@ -1,4 +1,4 @@
-package com.hexagonal.notice.domain.model;
+package com.hexagonal.notice.domain.model.in;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticationRequest {
+public class AuthenticationPayload {
 
     @NotBlank(message = "Username is required")
     private String username;

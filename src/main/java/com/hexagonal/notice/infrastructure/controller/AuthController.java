@@ -1,9 +1,9 @@
 package com.hexagonal.notice.infrastructure.controller;
 
 import com.hexagonal.notice.domain.model.AuthenticationCommand;
+import com.hexagonal.notice.domain.model.AuthenticationResult;
+import com.hexagonal.notice.domain.model.in.AuthenticationPayload;
 import com.hexagonal.notice.domain.ports.in.auth.AuthenticateUserUseCase;
-import com.hexagonal.notice.domain.model.AuthenticationRequest;
-import com.hexagonal.notice.domain.model.AuthenticationResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +23,8 @@ public class AuthController {
     private final AuthenticateUserUseCase authenticateUserUseCase;
 
     @PostMapping("/login")
-    public Mono<ResponseEntity<AuthenticationResponse>> authenticate(
-            @Valid @RequestBody AuthenticationRequest request
+    public Mono<ResponseEntity<AuthenticationResult>> authenticate(
+            @Valid @RequestBody AuthenticationPayload request
     ) {
         log.info("Authentication request received for user: {}", request.getUsername());
 
@@ -36,10 +36,7 @@ public class AuthController {
         return authenticateUserUseCase.authenticate(command)
                 .map(result -> {
                     log.info("User authenticated successfully: {}", request.getUsername());
-                    AuthenticationResponse response = AuthenticationResponse.builder()
-                            .token(result.getToken())
-                            .build();
-                    return ResponseEntity.ok(response);
+                    return ResponseEntity.ok(result);
                 });
     }
 }
