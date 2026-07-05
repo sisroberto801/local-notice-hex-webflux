@@ -44,7 +44,7 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
 
     @Override
     public Flux<User> findAll() {
-        return r2dbcUserRepository.findAll()
+        return r2dbcUserRepository.findAllByStatus(true)
                 .map(userMapper::toDomain);
     }
 
