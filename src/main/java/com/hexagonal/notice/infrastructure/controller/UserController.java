@@ -33,7 +33,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<ResponseEntity<User>> createUser(@RequestBody UserPayload request) {
         return userService.createUser(userMapper.createFromPayload(request))
-                .map(ResponseEntity::ok);
+                .map(user -> ResponseEntity.status(HttpStatus.CREATED).body(user));
     }
 
     @GetMapping("/{id}")
