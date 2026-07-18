@@ -4,9 +4,11 @@ import com.hexagonal.notice.domain.model.User;
 import com.hexagonal.notice.domain.ports.in.user.UpdateUserUseCase;
 import com.hexagonal.notice.domain.ports.out.UserRepositoryPort;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 @Component("updateUserBean")
+@Transactional
 public class UpdateUserUseCaseImpl implements UpdateUserUseCase {
     private final UserRepositoryPort userRepository;
 

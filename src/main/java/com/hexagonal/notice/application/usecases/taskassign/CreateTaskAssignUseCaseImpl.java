@@ -4,9 +4,11 @@ import com.hexagonal.notice.domain.model.TaskAssign;
 import com.hexagonal.notice.domain.ports.in.taskassign.CreateTaskAssignUseCase;
 import com.hexagonal.notice.domain.ports.out.TaskAssignRepositoryPort;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 @Component("createTaskAssignBean")
+@Transactional
 public class CreateTaskAssignUseCaseImpl implements CreateTaskAssignUseCase {
     private final TaskAssignRepositoryPort taskAssignRepository;
 

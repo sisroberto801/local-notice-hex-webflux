@@ -4,9 +4,11 @@ import com.hexagonal.notice.domain.model.Task;
 import com.hexagonal.notice.domain.ports.in.task.UpdateTaskUseCase;
 import com.hexagonal.notice.domain.ports.out.TaskRepositoryPort;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 @Component("updateTaskBean")
+@Transactional
 public class UpdateTaskUseCaseImpl implements UpdateTaskUseCase {
     private final TaskRepositoryPort taskRepository;
 

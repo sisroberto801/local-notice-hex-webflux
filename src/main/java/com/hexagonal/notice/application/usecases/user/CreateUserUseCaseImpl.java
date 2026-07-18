@@ -5,9 +5,11 @@ import com.hexagonal.notice.domain.ports.in.user.CreateUserUseCase;
 import com.hexagonal.notice.domain.ports.out.UserRepositoryPort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 @Component("createUserBean")
+@Transactional
 public class CreateUserUseCaseImpl implements CreateUserUseCase {
     private final UserRepositoryPort userRepository;
     private final PasswordEncoder passwordEncoder;
